@@ -1,6 +1,7 @@
 import json
 import re
 import requests
+from datetime import datetime
 
 
 # Fetch all release information from GitHub
@@ -40,6 +41,15 @@ def get_ipa_url(assets):
         if asset["name"].endswith(".ipa"):
             return asset["browser_download_url"]
     return None
+
+
+def format_timestamp(timestamp):
+    dt = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
+    day = dt.day
+    suffix = (
+        "th" if 11 <= day <= 13 else {1: "st", 2: "nd", 3: "rd"}.get(day % 10, "th")
+    )
+    return f"{day}{suffix} {dt.strftime('%b')}"
 
 
 def update_json_file(json_file, fetched_data_all, fetched_data_latest):
@@ -105,6 +115,7 @@ def update_json_file(json_file, fetched_data_all, fetched_data_latest):
     version = re.search(r"(\d+\.\d+\.\d+)", full_version).group(1)
     app["version"] = version
     app["versionDate"] = fetched_data_latest["published_at"]
+    formatted_date = format_timestamp(fetched_data_latest["published_at"])
 
     description = fetched_data_latest["body"]
 
@@ -132,7 +143,7 @@ def update_json_file(json_file, fetched_data_all, fetched_data_latest):
     news_identifier = f"release-{full_version}"
     news_entry = {
         "appID": "com.kodjodevf.mangayomi",
-        "title": f"{full_version} - Mangayomi",
+        "title": f"{full_version} - {formatted_date}",
         "identifier": news_identifier,
         "caption": "Update for Mangayomi now available!",
         "date": fetched_data_latest["published_at"],
