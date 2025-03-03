@@ -2,13 +2,21 @@
   <img src="images/header/readme_header.png" alt="Mangayomi Banner"/>
 </p>
 
-<a href="altstore://source?url=https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/apps.json"><img src="images/buttons/altstore_button.png" width="200"></a>
+<a href="altstore://source?url=https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/apps.json" target="_blank">
+  <img src="images/buttons/altstore_button.png" width="200">
+</a>
 &nbsp;
-<a href="feather://source/https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/apps.json"><img src="images/buttons/feather_button.png" width="200"></a>
+<a href="feather://source/https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/apps.json" target="_blank">
+  <img src="images/buttons/feather_button.png" width="200">
+</a>
 &nbsp;
-<a href="sidestore://source?url=https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/apps.json"><img src="images/buttons/sidestore_button.png" width="200"></a>
+<a href="sidestore://source?url=https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/apps.json" target="_blank">
+  <img src="images/buttons/sidestore_button.png" width="200">
+</a>
 &nbsp;
-<a href="https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/apps.json"><img src="images/buttons/url_button.png" width="200"></a>
+<a href="https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/apps.json">
+  <img src="images/buttons/url_button.png" width="200">
+</a>
 
 -----
 
