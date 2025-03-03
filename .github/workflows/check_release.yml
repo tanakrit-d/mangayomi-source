@@ -83,6 +83,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes detected, skipping commit."
           else
-            git commit -m "Update JSON with latest Mangayomi release: $release_tag"
+            git commit -m "Updated to latest Mangayomi release: $release_tag"
             git push
           fi
