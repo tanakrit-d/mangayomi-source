@@ -11,9 +11,6 @@ def fetch_all_releases(repo_url):
     releases = response.json()
     sorted_releases = sorted(releases, key=lambda x: x["published_at"], reverse=False)
 
-    with open('test.json', "w") as file:
-        json.dump(sorted_releases, file, indent=2)
-
     return sorted_releases
 
 
