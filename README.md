@@ -2,17 +2,17 @@
   <img src="images/header/readme_header.png" alt="Mangayomi Banner"/>
 </p>
 
-<a href="https://tanakrit-d.github.io/mangayomi-source/apps.json"><img src="images/buttons/feather_button.png" width="200"></a>
+<a href="https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/apps.json"><img src="images/buttons/feather_button.png" width="200"></a>
 &nbsp;
-<a href="https://tanakrit-d.github.io/mangayomi-source/apps.json"><img src="images/buttons/url_feather_button.png" width="200"></a>
+<a href="https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/apps.json"><img src="images/buttons/url_feather_button.png" width="200"></a>
 
 -----
 
 # Sideloading Source
 
-This is an unofficial repo source for Mangayomi.
+This is an unofficial repo source for [Mangayomi](https://github.com/kodjodevf/mangayomi).
 
-It will automatically stay up-to-date via. a GitHub workflow action that polls the main repository.
+It will automatically stay up-to-date via. a GitHub workflow action that polls the main repository each day.
 
 Currently it only supports [Feather](https://github.com/khcrysalis/Feather), as I have yet to determine the exact entitlements and privacy provisions required for AltStore [compatibility](https://faq.altstore.io/developers/make-a-source#app-permissions).
 
