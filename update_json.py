@@ -139,8 +139,8 @@ def update_json_file(json_file, fetched_data_all, fetched_data_latest):
             "identifier": news_identifier,
             "caption": "Update for Mangayomi now available!",
             "date": fetched_data_latest["published_at"],
-            "tintColor": "AE2C2B",
-            "imageURL": "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/news/news_2.webp",
+            "tintColor": "71717A",
+            "imageURL": "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/news/update_black.webp",
             "notify": True,
             "url": f"https://github.com/kodjodevf/mangayomi/releases/tag/{tag}",
         }
