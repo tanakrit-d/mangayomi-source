@@ -3,7 +3,7 @@
   "identifier": "com.kodjodevf.mangayomi",
   "headerURL": "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/headers/source_header_black.webp",
   "website": "https://github.com/kodjodevf/mangayomi",
-  "iconURL": "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/icons/mangayomi_black.webp",
+  "iconURL": "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/icons/mangayomi_black.png",
   "subtitle": "Mangayomi app source.",
   "description": "This is an unofficial source for Mangayomi.\n\nFor full details, check the GitHub repository:\nhttps://github.com/tanakrit-d/mangayomi-source",
   "tintColor": "71717A",
