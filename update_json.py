@@ -97,7 +97,13 @@ def update_json_file(json_file, fetched_data_all, fetched_data_latest):
 
     latest_version = fetched_data_latest["tag_name"].lstrip("v")
     tag = fetched_data_latest["tag_name"]
-    version = re.search(r"(\d+\.\d+\.\d+)", latest_version).group(1)
+    version_match = re.search(r"(\d+)\.(\d+)\.(\d+)", latest_version)
+
+    if version_match:
+        _, _, patch = map(int, version_match.groups())
+    else:
+        raise ValueError("Invalid version format")
+
     app["version"] = version
     app["versionDate"] = fetched_data_latest["published_at"]
 
@@ -127,6 +133,34 @@ def update_json_file(json_file, fetched_data_all, fetched_data_latest):
 
     if "news" not in data:
         data["news"] = []
+
+    news_identifier = f"release-{latest_version}"
+    if not any(item["identifier"] == news_identifier for item in data["news"]):
+        formatted_date = datetime.strptime(
+            fetched_data_latest["published_at"], "%Y-%m-%dT%H:%M:%SZ"
+        ).strftime("%d %b")
+        
+        # Determine caption and imageURL based on patch number
+        if patch == 0:
+            caption = "Major update for Mangayomi is here!"
+            image_url = "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/news/available_black.webp"
+        else:
+            caption = "Update for Mangayomi now available!"
+            image_url = "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/news/update_black.webp"
+        
+        news_entry = {
+            "appID": "com.kodjodevf.mangayomi",
+            "title": f"{latest_version} - {formatted_date}",
+            "identifier": news_identifier,
+            "caption": caption,
+            "date": fetched_data_latest["published_at"],
+            "tintColor": "71717A",
+            "imageURL": image_url,
+            "notify": True,
+            "url": f"https://github.com/kodjodevf/mangayomi/releases/tag/{tag}",
+        }
+        data["news"].append(news_entry)
+
 
     news_identifier = f"release-{latest_version}"
     if not any(item["identifier"] == news_identifier for item in data["news"]):
