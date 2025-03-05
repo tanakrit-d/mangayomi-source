@@ -139,7 +139,7 @@ def update_json_file(json_file, fetched_data_all, fetched_data_latest):
         formatted_date = datetime.strptime(
             fetched_data_latest["published_at"], "%Y-%m-%dT%H:%M:%SZ"
         ).strftime("%d %b")
-        
+
         # Determine caption and imageURL based on patch number
         if patch == 0:
             caption = "Major update for Mangayomi is here!"
@@ -147,7 +147,7 @@ def update_json_file(json_file, fetched_data_all, fetched_data_latest):
         else:
             caption = "Update for Mangayomi now available!"
             image_url = "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/news/update_black.webp"
-        
+
         news_entry = {
             "appID": "com.kodjodevf.mangayomi",
             "title": f"{latest_version} - {formatted_date}",
@@ -160,7 +160,6 @@ def update_json_file(json_file, fetched_data_all, fetched_data_latest):
             "url": f"https://github.com/kodjodevf/mangayomi/releases/tag/{tag}",
         }
         data["news"].append(news_entry)
-
 
     news_identifier = f"release-{latest_version}"
     if not any(item["identifier"] == news_identifier for item in data["news"]):
