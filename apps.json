@@ -1,9 +1,9 @@
 {
   "name": "Mangayomi",
   "identifier": "com.kodjodevf.mangayomi",
-  "headerURL": "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/headers/source_header_black.png",
+  "headerURL": "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/headers/source_header_black.webp",
   "website": "https://github.com/kodjodevf/mangayomi",
-  "iconURL": "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/icons/mangayomi_black.png",
+  "iconURL": "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/icons/mangayomi_black.webp",
   "subtitle": "Mangayomi app source.",
   "description": "This is an unofficial source for Mangayomi.\n\nFor full details, check the GitHub repository:\nhttps://github.com/tanakrit-d/mangayomi-source",
   "tintColor": "71717A",
@@ -19,14 +19,14 @@
       "versionDescription": "## What's Changed\r\n* Update quarkuc extractor  by @yxxyun in https://github.com/kodjodevf/mangayomi/pull/393\r\n* added long press for 2x playback speed by @Schnitzel5 in https://github.com/kodjodevf/mangayomi/pull/396\r\n* fix broken category \r\n* add confirmation dialog for adding repositories\r\n\r\n\r\n**Full Changelog**: https://github.com/kodjodevf/mangayomi/compare/v0.5.1...v0.5.2",
       "downloadURL": "https://github.com/kodjodevf/mangayomi/releases/download/v0.5.2/Mangayomi-v0.5.2-ios.ipa",
       "localizedDescription": "Mangayomi is an open-source Flutter app for reading manga, novels, and watching anime across multiple platforms.",
-      "iconURL": "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/icons/mangayomi_black.png",
+      "iconURL": "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/icons/mangayomi_black.webp",
       "tintColor": "71717A",
       "category": "entertainment",
       "size": 56680831,
       "screenshotURLs": [
-        "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/screenshots/image_0_black.png",
-        "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/screenshots/image_1_black.png",
-        "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/screenshots/image_2_black.png"
+        "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/screenshots/image_0_black.webp",
+        "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/screenshots/image_1_black.webp",
+        "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/screenshots/image_2_black.webp"
       ],
       "versions": [
         {
@@ -65,7 +65,7 @@
       "caption": "Update for Mangayomi now available!",
       "date": "2025-02-23T16:08:37Z",
       "tintColor": "71717A",
-      "imageURL": "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/news/update_black.png",
+      "imageURL": "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/news/update_black.webp",
       "notify": true,
       "url": "https://github.com/kodjodevf/mangayomi/releases/tag/v0.5.2"
     }
