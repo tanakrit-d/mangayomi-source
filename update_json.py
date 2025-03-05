@@ -161,24 +161,6 @@ def update_json_file(json_file, fetched_data_all, fetched_data_latest):
         }
         data["news"].append(news_entry)
 
-    news_identifier = f"release-{latest_version}"
-    if not any(item["identifier"] == news_identifier for item in data["news"]):
-        formatted_date = datetime.strptime(
-            fetched_data_latest["published_at"], "%Y-%m-%dT%H:%M:%SZ"
-        ).strftime("%d %b")
-        news_entry = {
-            "appID": "com.kodjodevf.mangayomi",
-            "title": f"{latest_version} - {formatted_date}",
-            "identifier": news_identifier,
-            "caption": "Update for Mangayomi now available!",
-            "date": fetched_data_latest["published_at"],
-            "tintColor": "71717A",
-            "imageURL": "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/news/update_black.webp",
-            "notify": True,
-            "url": f"https://github.com/kodjodevf/mangayomi/releases/tag/{tag}",
-        }
-        data["news"].append(news_entry)
-
     with open(json_file, "w") as file:
         json.dump(data, file, indent=2)
 
