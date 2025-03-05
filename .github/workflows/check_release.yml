@@ -43,7 +43,7 @@ jobs:
       - name: Load Previous Release (if exists)
         id: load_previous
         run: |
-          PREV_RELEASE=$(cat .last_release 2>/dev/null || echo "none")
+          PREV_RELEASE=$(cat .current-release 2>/dev/null || echo "none")
           echo "Previous release: $PREV_RELEASE"
           echo "previous_release=$PREV_RELEASE" >> $GITHUB_ENV
 
@@ -56,10 +56,10 @@ jobs:
           fi
 
           echo "New release detected: $release_tag"
-          echo "$release_tag" > .last_release
+          echo "$release_tag" > .current-release
 
       - name: Save Latest Release State
-        run: echo "$release_tag" > .last_release
+        run: echo "$release_tag" > .current-release
 
       - name: Setup Python
         uses: actions/setup-python@v4
