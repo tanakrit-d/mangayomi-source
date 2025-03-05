@@ -20,6 +20,15 @@ This repo does not rehost releases. Instead it fetches the direct `.ipa` link an
 Currently it supports [Feather](https://github.com/khcrysalis/Feather) and [SideStore](https://sidestore.io/).  
 It may work with [AltStore](https://altstore.io/) - but it has not been tested as I am yet to determine the exact entitlements and privacy provisions specified in the [compatibility documentation](https://faq.altstore.io/developers/make-a-source#app-permissions).
 
+## Features
+
+- [x] Displays new releases within 24hrs
+- [x] Files are direct links to the GitHub repo
+- [x] News banners and captions vary between minor and patch versions
+- [x] Provides version and formatted date in the news title for readability
+- [x] Automatically purges old releases if they are removed from the main repo
+- [ ] Missing something? Let me know!
+
 ## Credit
 
 Thank you to [Balackburn](https://github.com/Balackburn) for their Apollo AltStore source implementation which was used to inform this one.
