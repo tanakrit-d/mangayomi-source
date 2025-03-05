@@ -1,4 +1,4 @@
-<p align="center"><img src="images/header/readme_header.png" alt="Mangayomi Banner"/></p>
+<p align="center"><img src="images/headers/readme_header_black.webp" alt="Mangayomi Banner"/></p>
 
 <a href="https://intradeus.github.io/http-protocol-redirector?r=altstore://source?url=https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/apps.json"><img src="images/buttons/altstore_button.png" width="200"></a>
 &nbsp;

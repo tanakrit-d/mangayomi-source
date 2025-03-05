@@ -4,7 +4,6 @@ import requests
 from datetime import datetime
 
 
-# Fetch all release information from GitHub
 def fetch_all_releases(repo_url):
     api_url = f"https://api.github.com/repos/{repo_url}/releases"
     headers = {"Accept": "application/vnd.github+json"}
@@ -15,7 +14,6 @@ def fetch_all_releases(repo_url):
     return sorted_releases
 
 
-# Fetch the latest release information from GitHub
 def fetch_latest_release(repo_url):
     api_url = f"https://api.github.com/repos/{repo_url}/releases"
     headers = {"Accept": "application/vnd.github+json"}
@@ -29,27 +27,15 @@ def fetch_latest_release(repo_url):
     raise ValueError("No release found.")
 
 
-# Update the JSON file with the fetched data
-def remove_tags(text):
-    text = re.sub("<[^<]+?>", "", text)  # Remove HTML tags
-    text = re.sub(r"#{1,6}\s?", "", text)  # Remove markdown header tags
-    return text
+def purge_old_news(data, fetched_versions):
+    if "news" not in data:
+        return
 
+    valid_identifiers = {f"release-{version}" for version in fetched_versions}
 
-def get_ipa_url(assets):
-    for asset in assets:
-        if asset["name"].endswith(".ipa"):
-            return asset["browser_download_url"]
-    return None
-
-
-def format_timestamp(timestamp):
-    dt = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
-    day = dt.day
-    suffix = (
-        "th" if 11 <= day <= 13 else {1: "st", 2: "nd", 3: "rd"}.get(day % 10, "th")
-    )
-    return f"{day}{suffix} {dt.strftime('%b')}"
+    data["news"] = [
+        entry for entry in data["news"] if entry["identifier"] in valid_identifiers
+    ]
 
 
 def update_json_file(json_file, fetched_data_all, fetched_data_latest):
@@ -58,26 +44,35 @@ def update_json_file(json_file, fetched_data_all, fetched_data_latest):
 
     app = data["apps"][0]
 
-    # Ensure 'versions' key exists in app
     if "versions" not in app:
         app["versions"] = []
+
+    fetched_versions = []
 
     for release in fetched_data_all:
         full_version = release["tag_name"].lstrip("v")
         version = re.search(r"(\d+\.\d+\.\d+)", full_version).group(1)
         version_date = release["published_at"]
+        fetched_versions.append(version)
 
         description = release["body"]
         keyword = "Mangayomi Release Information"
         if keyword in description:
             description = description.split(keyword, 1)[1].strip()
 
-        description = remove_tags(description)
-        description = str.replace(r"\*{2}", "", description)
-        description = str.replace(r"-", "•", description)
-        description = str.replace(r"`", '"', description)
+        description = re.sub("<[^<]+?>", "", description)  # Remove HTML tags
+        description = (
+            description.replace(r"\*{2}", "").replace("-", "•").replace("`", '"')
+        )
 
-        download_url = get_ipa_url(release["assets"])
+        download_url = next(
+            (
+                asset["browser_download_url"]
+                for asset in release["assets"]
+                if asset["name"].endswith(".ipa")
+            ),
+            None,
+        )
         size = next(
             (
                 asset["size"]
@@ -95,37 +90,30 @@ def update_json_file(json_file, fetched_data_all, fetched_data_latest):
             "size": size,
         }
 
-        # Check if the version entry already exists based on version
-        version_entry_exists = [
-            item for item in app["versions"] if item["version"] == version
-        ]
+        app["versions"] = [v for v in app["versions"] if v["version"] != version]
 
-        # If the version entry exists, remove it
-        if version_entry_exists:
-            app["versions"].remove(version_entry_exists[0])
-
-        # Add the new version entry (whether or not it existed before) only if downloadURL is not None
-        if download_url is not None:
-            # Insert the version entry at the first position
+        if download_url:
             app["versions"].insert(0, version_entry)
 
-    # Now handle the latest release data (from the second script)
-    full_version = fetched_data_latest["tag_name"].lstrip("v")
+    latest_version = fetched_data_latest["tag_name"].lstrip("v")
     tag = fetched_data_latest["tag_name"]
-    version = re.search(r"(\d+\.\d+\.\d+)", full_version).group(1)
+    version = re.search(r"(\d+\.\d+\.\d+)", latest_version).group(1)
     app["version"] = version
     app["versionDate"] = fetched_data_latest["published_at"]
-    formatted_date = format_timestamp(fetched_data_latest["published_at"])
 
     description = fetched_data_latest["body"]
-
-    description = remove_tags(description)
-    description = str.replace(r"\*{2}", "", description)
-    description = str.replace(r"-", "•", description)
-    description = str.replace(r"`", '"', description)
+    description = re.sub("<[^<]+?>", "", description)  # Remove HTML tags
+    description = description.replace(r"\*{2}", "").replace("-", "•").replace("`", '"')
 
     app["versionDescription"] = description
-    app["downloadURL"] = get_ipa_url(fetched_data_latest["assets"])
+    app["downloadURL"] = next(
+        (
+            asset["browser_download_url"]
+            for asset in fetched_data_latest["assets"]
+            if asset["name"].endswith(".ipa")
+        ),
+        None,
+    )
     app["size"] = next(
         (
             asset["size"]
@@ -135,38 +123,33 @@ def update_json_file(json_file, fetched_data_all, fetched_data_latest):
         None,
     )
 
-    # Ensure 'news' key exists in data
+    purge_old_news(data, fetched_versions)
+
     if "news" not in data:
         data["news"] = []
 
-    # Add news entry if there's a new release
-    news_identifier = f"release-{full_version}"
-    news_entry = {
-        "appID": "com.kodjodevf.mangayomi",
-        "title": f"{full_version} - {formatted_date}",
-        "identifier": news_identifier,
-        "caption": "Update for Mangayomi now available!",
-        "date": fetched_data_latest["published_at"],
-        "tintColor": "AE2C2B",
-        "imageURL": "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/news/news_2.webp",
-        "notify": True,
-        "url": f"https://github.com/kodjodevf/mangayomi/releases/tag/{tag}",
-    }
-
-    # Check if the news entry already exists
-    news_entry_exists = any(
-        item["identifier"] == news_identifier for item in data["news"]
-    )
-
-    # Add the news entry if it doesn't exist
-    if not news_entry_exists:
+    news_identifier = f"release-{latest_version}"
+    if not any(item["identifier"] == news_identifier for item in data["news"]):
+        formatted_date = datetime.strptime(
+            fetched_data_latest["published_at"], "%Y-%m-%dT%H:%M:%SZ"
+        ).strftime("%d %b")
+        news_entry = {
+            "appID": "com.kodjodevf.mangayomi",
+            "title": f"{latest_version} - {formatted_date}",
+            "identifier": news_identifier,
+            "caption": "Update for Mangayomi now available!",
+            "date": fetched_data_latest["published_at"],
+            "tintColor": "71717A",
+            "imageURL": "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/news/update_black.webp",
+            "notify": True,
+            "url": f"https://github.com/kodjodevf/mangayomi/releases/tag/{tag}",
+        }
         data["news"].append(news_entry)
 
     with open(json_file, "w") as file:
         json.dump(data, file, indent=2)
 
 
-# Main function
 def main():
     repo_url = "kodjodevf/mangayomi"
     json_file = "apps.json"
