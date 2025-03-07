@@ -2,23 +2,99 @@ import json
 import re
 import requests
 from datetime import datetime
+from typing import Dict, List, Optional, Set, Any, TypedDict
 
 
-def fetch_all_releases(repo_url):
-    api_url = f"https://api.github.com/repos/{repo_url}/releases"
-    headers = {"Accept": "application/vnd.github+json"}
+class ReleaseAsset(TypedDict):
+    browser_download_url: str
+    name: str
+    size: int
+
+
+class GitHubRelease(TypedDict):
+    tag_name: str
+    published_at: str
+    body: str
+    assets: List[ReleaseAsset]
+
+
+class VersionEntry(TypedDict):
+    version: str
+    date: str
+    localizedDescription: str
+    downloadURL: Optional[str]
+    size: Optional[int]
+
+
+class AppInfo(TypedDict):
+    versions: List[VersionEntry]
+    version: str
+    versionDate: str
+    versionDescription: str
+    downloadURL: Optional[str]
+    size: Optional[int]
+
+
+class NewsEntry(TypedDict):
+    appID: str
+    title: str
+    identifier: str
+    caption: str
+    date: str
+    tintColor: str
+    imageURL: str
+    notify: bool
+    url: str
+
+
+class AppData(TypedDict):
+    apps: List[Dict[str, Any]]
+    news: List[NewsEntry]
+
+
+# Constants
+REPO_URL: str = "kodjodevf/mangayomi"
+JSON_FILE: str = "apps.json"
+APP_ID: str = "com.kodjodevf.mangayomi"
+BASE_IMAGE_URL: str = "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/news"
+
+
+def fetch_all_releases() -> List[GitHubRelease]:
+    """
+    Fetch all GitHub releases for the repository, sorted by published date (oldest first).
+
+    Returns:
+        List[GitHubRelease]: List of all releases sorted by publication date
+    """
+    api_url: str = f"https://api.github.com/repos/{REPO_URL}/releases"
+    headers: Dict[str, str] = {"Accept": "application/vnd.github+json"}
+
     response = requests.get(api_url, headers=headers)
-    releases = response.json()
+    response.raise_for_status()  # Raise exception for HTTP errors
+
+    releases: List[GitHubRelease] = response.json()
     sorted_releases = sorted(releases, key=lambda x: x["published_at"], reverse=False)
 
     return sorted_releases
 
 
-def fetch_latest_release(repo_url):
-    api_url = f"https://api.github.com/repos/{repo_url}/releases"
-    headers = {"Accept": "application/vnd.github+json"}
+def fetch_latest_release() -> GitHubRelease:
+    """
+    Fetch the latest GitHub release for the repository.
+
+    Returns:
+        GitHubRelease: The latest release
+
+    Raises:
+        ValueError: If no releases are found
+    """
+    api_url: str = f"https://api.github.com/repos/{REPO_URL}/releases"
+    headers: Dict[str, str] = {"Accept": "application/vnd.github+json"}
+
     response = requests.get(api_url, headers=headers)
-    releases = response.json()
+    response.raise_for_status()  # Raise exception for HTTP errors
+
+    releases: List[GitHubRelease] = response.json()
     sorted_releases = sorted(releases, key=lambda x: x["published_at"], reverse=True)
 
     if sorted_releases:
@@ -27,62 +103,111 @@ def fetch_latest_release(repo_url):
     raise ValueError("No release found.")
 
 
-def purge_old_news(data, fetched_versions):
+def purge_old_news(data: AppData, fetched_versions: List[str]) -> None:
+    """
+    Remove news entries for versions that no longer exist.
+
+    Args:
+        data: The app data dictionary
+        fetched_versions: List of valid version strings
+    """
     if "news" not in data:
         return
 
-    valid_identifiers = {f"release-{version}" for version in fetched_versions}
-
+    valid_identifiers: Set[str] = {f"release-{version}" for version in fetched_versions}
     data["news"] = [
         entry for entry in data["news"] if entry["identifier"] in valid_identifiers
     ]
 
 
-def update_json_file(json_file, fetched_data_all, fetched_data_latest):
+def format_description(description: str) -> str:
+    """
+    Format release description by removing HTML tags and replacing certain characters.
+
+    Args:
+        description: The raw description text
+
+    Returns:
+        str: Cleaned description text
+    """
+    # Remove HTML tags
+    formatted = re.sub(r"<[^<]+?>", "", description)
+
+    # Additional formatting
+    formatted = formatted.replace(r"\*{2}", "").replace("-", "•").replace("`", '"')
+
+    return formatted
+
+
+def find_download_url_and_size(
+    release: GitHubRelease,
+) -> tuple[Optional[str], Optional[int]]:
+    """
+    Find the download URL and size for a release's IPA file.
+
+    Args:
+        release: The GitHub release
+
+    Returns:
+        tuple: (download_url, size) or (None, None) if not found
+    """
+    # Find IPA asset
+    for asset in release["assets"]:
+        if asset["name"].endswith(".ipa"):
+            return asset["browser_download_url"], asset["size"]
+
+    return None, None
+
+
+def update_json_file(
+    json_file: str,
+    fetched_data_all: List[GitHubRelease],
+    fetched_data_latest: GitHubRelease,
+) -> None:
+    """
+    Update the apps.json file with the fetched GitHub releases.
+
+    Args:
+        json_file: Path to the JSON file
+        fetched_data_all: List of all GitHub releases
+        fetched_data_latest: The latest GitHub release
+    """
     with open(json_file, "r") as file:
-        data = json.load(file)
+        data: AppData = json.load(file)
 
     app = data["apps"][0]
 
+    # Initialize versions list if it doesn't exist
     if "versions" not in app:
         app["versions"] = []
 
-    fetched_versions = []
+    fetched_versions: List[str] = []
 
+    # Process all releases
     for release in fetched_data_all:
         full_version = release["tag_name"].lstrip("v")
-        version = re.search(r"(\d+\.\d+\.\d+)", full_version).group(1)
+        version_match = re.search(r"(\d+\.\d+\.\d+)", full_version)
+
+        if not version_match:
+            continue
+
+        version = version_match.group(1)
         version_date = release["published_at"]
         fetched_versions.append(version)
 
+        # Clean up description
         description = release["body"]
         keyword = "Mangayomi Release Information"
         if keyword in description:
             description = description.split(keyword, 1)[1].strip()
 
-        description = re.sub("<[^<]+?>", "", description)  # Remove HTML tags
-        description = (
-            description.replace(r"\*{2}", "").replace("-", "•").replace("`", '"')
-        )
+        description = format_description(description)
 
-        download_url = next(
-            (
-                asset["browser_download_url"]
-                for asset in release["assets"]
-                if asset["name"].endswith(".ipa")
-            ),
-            None,
-        )
-        size = next(
-            (
-                asset["size"]
-                for asset in release["assets"]
-                if asset["browser_download_url"] == download_url
-            ),
-            None,
-        )
+        # Find download URL and size
+        download_url, size = find_download_url_and_size(release)
 
-        version_entry = {
+        # Create version entry
+        version_entry: VersionEntry = {
             "version": version,
             "date": version_date,
             "localizedDescription": description,
@@ -90,50 +215,39 @@ def update_json_file(json_file, fetched_data_all, fetched_data_latest):
             "size": size,
         }
 
+        # Remove existing entry with the same version
         app["versions"] = [v for v in app["versions"] if v["version"] != version]
 
+        # Add new entry if download URL exists
         if download_url:
             app["versions"].insert(0, version_entry)
 
+    # Update app info with latest release
     latest_version = fetched_data_latest["tag_name"].lstrip("v")
     tag = fetched_data_latest["tag_name"]
     version_match = re.search(r"(\d+)\.(\d+)\.(\d+)", latest_version)
 
-    if version_match:
-        _, _, patch = map(int, version_match.groups())
-    else:
+    if not version_match:
         raise ValueError("Invalid version format")
+
+    _, _, patch = map(int, version_match.groups())
 
     app["version"] = version
     app["versionDate"] = fetched_data_latest["published_at"]
+    app["versionDescription"] = format_description(fetched_data_latest["body"])
 
-    description = fetched_data_latest["body"]
-    description = re.sub("<[^<]+?>", "", description)  # Remove HTML tags
-    description = description.replace(r"\*{2}", "").replace("-", "•").replace("`", '"')
+    # Find latest download URL and size
+    download_url, size = find_download_url_and_size(fetched_data_latest)
+    app["downloadURL"] = download_url
+    app["size"] = size
 
-    app["versionDescription"] = description
-    app["downloadURL"] = next(
-        (
-            asset["browser_download_url"]
-            for asset in fetched_data_latest["assets"]
-            if asset["name"].endswith(".ipa")
-        ),
-        None,
-    )
-    app["size"] = next(
-        (
-            asset["size"]
-            for asset in fetched_data_latest["assets"]
-            if asset["browser_download_url"] == app["downloadURL"]
-        ),
-        None,
-    )
-
+    # Update news entries
     purge_old_news(data, fetched_versions)
 
     if "news" not in data:
         data["news"] = []
 
+    # Add news entry for the latest version if it doesn't exist
     news_identifier = f"release-{latest_version}"
     if not any(item["identifier"] == news_identifier for item in data["news"]):
         formatted_date = datetime.strptime(
@@ -143,13 +257,13 @@ def update_json_file(json_file, fetched_data_all, fetched_data_latest):
         # Determine caption and imageURL based on patch number
         if patch == 0:
             caption = "Major update for Mangayomi is here!"
-            image_url = "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/news/available_black.webp"
+            image_url = f"{BASE_IMAGE_URL}/available_black.webp"
         else:
             caption = "Update for Mangayomi now available!"
-            image_url = "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/news/update_black.webp"
+            image_url = f"{BASE_IMAGE_URL}/update_black.webp"
 
-        news_entry = {
-            "appID": "com.kodjodevf.mangayomi",
+        news_entry: NewsEntry = {
+            "appID": APP_ID,
             "title": f"{latest_version} - {formatted_date}",
             "identifier": news_identifier,
             "caption": caption,
@@ -157,21 +271,26 @@ def update_json_file(json_file, fetched_data_all, fetched_data_latest):
             "tintColor": "71717A",
             "imageURL": image_url,
             "notify": True,
-            "url": f"https://github.com/kodjodevf/mangayomi/releases/tag/{tag}",
+            "url": f"https://github.com/{REPO_URL}/releases/tag/{tag}",
         }
         data["news"].append(news_entry)
 
+    # Write updated data back to file
     with open(json_file, "w") as file:
         json.dump(data, file, indent=2)
 
 
-def main():
-    repo_url = "kodjodevf/mangayomi"
-    json_file = "apps.json"
-
-    fetched_data_all = fetch_all_releases(repo_url)
-    fetched_data_latest = fetch_latest_release(repo_url)
-    update_json_file(json_file, fetched_data_all, fetched_data_latest)
+def main() -> None:
+    """
+    Entrypoint for GitHub workflow action.
+    """
+    try:
+        fetched_data_all = fetch_all_releases()
+        fetched_data_latest = fetch_latest_release()
+        update_json_file(JSON_FILE, fetched_data_all, fetched_data_latest)
+        print(f"Successfully updated {JSON_FILE} with latest releases.")
+    except Exception as e:
+        print(f"Error updating releases: {e}")
 
 
 if __name__ == "__main__":
