@@ -18,7 +18,7 @@ It will automatically stay up-to-date via. a GitHub workflow action that polls t
 This repo does not rehost releases. Instead it fetches the direct `.ipa` link and inserts new entries into [apps.json](apps.json)
 
 Currently it supports [Feather](https://github.com/khcrysalis/Feather) and [SideStore](https://sidestore.io/).  
-It may work with [AltStore](https://altstore.io/) - but it has not been tested as I am yet to determine the exact entitlements and privacy provisions specified in the [compatibility documentation](https://faq.altstore.io/developers/make-a-source#app-permissions).
+It may work with [AltStore](https://altstore.io/) - but it has not been tested as I do not use it 😅
 
 ## Features
 
