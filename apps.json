@@ -24,15 +24,15 @@
       "category": "entertainment",
       "size": 57985902,
       "screenshotURLs": [
-        "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/repo/images/screenshots/image_0_default.webp",
-        "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/repo/images/screenshots/image_1_default.webp",
-        "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/repo/images/screenshots/image_2_default.webp"
+        "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/screenshots/image_0_default.webp",
+        "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/screenshots/image_1_default.webp",
+        "https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/images/screenshots/image_2_default.webp"
       ],
       "versions": [
         {
           "version": "0.5.2",
           "date": "2025-03-16T13:38:23Z",
-          "localizedDescription": "This version is AltStore/SdieStore compatible. It has been signed with a revoked certificate.",
+          "localizedDescription": "This version is AltStore/SideStore compatible. It has been signed with a revoked certificate.",
           "downloadURL": "https://github.com/tanakrit-d/mangayomi-workflow-test/releases/download/v0.5.2/Mangayomi-v0.5.2-ios.ipa",
           "size": 57985902
         },
