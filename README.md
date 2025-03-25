@@ -17,8 +17,11 @@ An unofficial repository source for [Mangayomi](https://github.com/kodjodevf/man
 It will automatically stay up-to-date via. a GitHub workflow action that polls the main repo each day.  
 This repo does not rehost releases. Instead it fetches the direct `.ipa` link and inserts new entries into [apps.json](apps.json)
 
-Currently it supports [Feather](https://github.com/khcrysalis/Feather) and [SideStore](https://sidestore.io/).  
-It may work with [AltStore](https://altstore.io/) - but it has not been tested as I do not use it 😅
+Currently it only supports [Feather](https://github.com/khcrysalis/Feather).
+
+[AltStore](https://altstore.io/) and [SideStore](https://sidestore.io/) sources are available - but installation is **not supported.**  
+This is because the app is not signed during the build/release process.  
+The open PR [add ipa signing; integrate repo; add entitlements #418](https://github.com/kodjodevf/mangayomi/pull/418) hopes to address this in the future.
 
 ## Features
 
