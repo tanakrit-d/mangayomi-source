@@ -375,8 +375,8 @@ def main() -> None:
         config = load_config("config.json")
         fetched_data_all = fetch_all_releases(config["repo_url"])
         fetched_data_latest = fetch_latest_release(config["repo_url"])
-        update_json_file(config, "apps.json", fetched_data_all, fetched_data_latest)
-        print("Successfully updated apps.json with latest releases.")
+        update_json_file(config, config["json_file"], fetched_data_all, fetched_data_latest)
+        print(f"Successfully updated {config["json_file"]} with latest releases.")
     except Exception as e:
         print(f"Error updating releases: {e}")
 
