@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       IS_NEW_RELEASE: ${{ steps.check-release.outputs.IS_NEW_RELEASE }}
-      RELEASE_TAG: ${{ steps.check-release.outputs.release_tag }}
+      RELEASE_TAG: ${{ steps.check-release.outputs.RELEASE_TAG }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
