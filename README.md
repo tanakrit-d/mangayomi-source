@@ -1,3 +1,14 @@
+# Mangayomi Sideloading Source
+
+> [!IMPORTANT]
+> This repository has now been archived.  
+>
+> The Mangayomi sideloading source has been integrated into the official repo.  
+> Please update your AltStore/Feather/SideStore source to the official links: [Mangayomi](https://github.com/kodjodevf/mangayomi)  
+> This repository will no longer receive updates.
+
+-----
+
 <p align="center"><img src="images/headers/readme_header_default.webp" alt="Mangayomi Banner"/></p>
 
 <a href="https://intradeus.github.io/http-protocol-redirector?r=altstore://source?url=https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/apps.json"><img src="images/buttons/altstore_button.png" width="200"></a>
@@ -9,8 +20,6 @@
 <a href="https://raw.githubusercontent.com/tanakrit-d/mangayomi-source/refs/heads/main/apps.json"><img src="images/buttons/url_button.png" width="200"></a>
 
 -----
-
-# Sideloading Source
 
 An unofficial repository source for [Mangayomi](https://github.com/kodjodevf/mangayomi).
 
