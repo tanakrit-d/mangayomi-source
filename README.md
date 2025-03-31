@@ -27,9 +27,7 @@ The open PR [add ipa signing; integrate repo; add entitlements #418](https://git
 
 - [x] Displays new releases within 24hrs
 - [x] Files are direct links to the GitHub repo
-- [x] News banners and captions vary between minor and patch versions
 - [x] Provides version and formatted date in the news title for readability
-- [x] Automatically purges old releases if they are removed from the main repo
 - [ ] Missing something? Let me know!
 
 ## Credit
