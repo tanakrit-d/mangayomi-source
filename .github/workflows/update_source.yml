@@ -2,7 +2,15 @@ name: update source
 
 on:
   workflow_call:
+    inputs:
+      RELEASE_TAG:
+        required: true
+        type: string
   workflow_dispatch:
+    inputs:
+      RELEASE_TAG:
+        required: true
+        type: string
 
 env:
   PYTHON_VERSION: '3.13'
@@ -40,6 +48,6 @@ jobs:
           if git diff --cached --quiet; then
               echo "No changes detected, skipping commit."
           else
-              git commit -m "update version to $RELEASE_TAG"
+              git commit -m "update version to ${{ inputs.RELEASE_TAG }}"
               git push
           fi

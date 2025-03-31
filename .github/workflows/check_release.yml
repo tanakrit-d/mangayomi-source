@@ -54,3 +54,5 @@ jobs:
     needs: check-release
     if: needs.check-release.outputs.IS_NEW_RELEASE == 'true'
     uses: ./.github/workflows/update_source.yml
+    with:
+      RELEASE_TAG: ${{ needs.check-release.outputs.RELEASE_TAG }}
