@@ -1,0 +1,45 @@
+name: update source
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: '3.13'
+  GITHUB_API_URL: "https://api.github.com/repos/kodjodevf/mangayomi/releases/latest"
+
+jobs:
+  update-source:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "${{ env.PYTHON_VERSION}}"
+
+      - name: Install python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: Update source files
+        run: |
+          python update_json.py
+
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+
+          git add apps.json
+
+          if git diff --cached --quiet; then
+              echo "No changes detected, skipping commit."
+          else
+              git commit -m "update version to $RELEASE_TAG"
+              git push
+          fi
